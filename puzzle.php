@@ -95,21 +95,17 @@ function count_colisions() {
 }
 
 for($i = 1; $i <= RUNS; $i++) {
-    $p1 = gen_puzzle();
-    $p2 = gen_puzzle();
-    $p3 = gen_puzzle();
+
+    for($p = 1; $p <= 3; $p++)
+        ${'p'.$p} = gen_puzzle();
 
     echo "Iteration: $i\n";
     echo "--------------------------------------------------\n";
 
-    echo "P1:\n";
-    print_puzzle($p1);
-
-    echo "P2:\n";
-    print_puzzle($p2);
-
-    echo "P3:\n";
-    print_puzzle($p3);
+    for($p = 1; $p <= 3; $p++) {
+        echo "P$p:\n";
+        print_puzzle(${'p'.$p});
+    }
 
     $floor = populate_floor($p1, $p2, $p3);
 
