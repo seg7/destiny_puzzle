@@ -70,21 +70,14 @@ function populate_floor($p1, $p2, $p3) {
         [[],[],[]],
     ];
     $floor = rotate90($floor);
-    for($i = 0; $i <= 2; $i++)
-        for ($j = 0; $j <= 2; $j++)
-            if($p1[$i][$j] > 0)
-                $floor[$i][$j][] = $p1[$i][$j];
-    $floor = rotate90($floor, 3);
-    for($i = 0; $i <= 2; $i++)
-        for ($j = 0; $j <= 2; $j++)
-            if($p2[$i][$j] > 0)
-                $floor[$i][$j][] = $p2[$i][$j];
-    $floor = rotate90($floor, 3);
-    for($i = 0; $i <= 2; $i++)
-        for ($j = 0; $j <= 2; $j++)
-            if($p3[$i][$j] > 0)
-                $floor[$i][$j][] = $p3[$i][$j];
-    $floor = rotate90($floor);
+    for($p = 1; $p <= 3; $p++) {
+        for ($i = 0; $i <= 2; $i++)
+            for ($j = 0; $j <= 2; $j++)
+                if (${'p'.$p}[$i][$j] > 0)
+                    $floor[$i][$j][] = ${'p'.$p}[$i][$j];
+        $floor = rotate90($floor, 3);
+    }
+    $floor = rotate90($floor,2);
     return $floor;
 }
 
