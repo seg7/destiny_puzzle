@@ -44,8 +44,7 @@ function print_puzzle($puzzle) {
     for($i = 0; $i <= 2; $i++) {
         for ($j = 0; $j <= 2; $j++) {
             echo $puzzle[$i][$j]
-                ? $puzzle[$i][$j]
-                : iconv('cp437', 'utf8', chr(219));
+                ?: iconv('cp437', 'utf8', chr(219));
             echo ' ';
         }
         echo "\n";
@@ -57,15 +56,15 @@ function print_floor($floor) {
     echo "               |            \n";
     for($i = 0; $i <= 2; $i++) {
         for ($j = 0; $j <= 2; $j++) {
-            if($i == 1 && $j == 0)
+            if($i === 1 && $j === 0)
                 echo 'P1- ';
-            elseif($j == 0)
+            elseif($j === 0)
                 echo '    ';
             echo !empty($floor[$i][$j])
                 ? str_pad(str_replace('"', '', json_encode($floor[$i][$j])), 7, ' ', STR_PAD_BOTH)
                 : str_repeat(iconv('cp437', 'utf8', chr(219)), 7);
             echo ' ';
-            echo $i == 1 && $j == 2
+            echo $i === 1 && $j === 2
                 ? '-P3'
                 : '';
         }
