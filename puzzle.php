@@ -60,14 +60,17 @@ function return_line_puzzle($puzzle, $line) {
 }
 
 function print_floor($floor) {
+    global $p1, $p2, $p3;
+
+
     for($i = 0; $i <= 2; $i++) {
-        echo '                 ' . return_line_puzzle($GLOBALS['p2'], $i + 1)."\n";
+        echo '                 ' . return_line_puzzle($p2, $i + 1)."\n";
     }
     echo "                   v            \n";
     for($i = 0; $i <= 2; $i++) {
         for ($j = 0; $j <= 2; $j++) {
             if($j === 0) {
-                echo return_line_puzzle($GLOBALS['p1'], $i + 1);
+                echo return_line_puzzle($p1, $i + 1);
                 if ($i === 1)
                     echo '> ';
                 else
@@ -82,7 +85,7 @@ function print_floor($floor) {
                     echo '< ';
                 else
                     echo '  ';
-                echo return_line_puzzle($GLOBALS['p3'], $i + 1);
+                echo return_line_puzzle($p3, $i + 1);
             }
         }
         echo "\n";
@@ -118,8 +121,7 @@ function populate_floor($p1, $p2, $p3) {
 }
 
 function count_colisions() {
-    global $collisions;
-    global $floor;
+    global $collisions, $floor;
 
     for($i = 0; $i <= 2; $i++)
         for ($j = 0; $j <= 2; $j++) {
@@ -168,4 +170,5 @@ for($i = 1; $i <= RUNS; $i++) {
     count_colisions();
 }
 
-echo sprintf("Strat: %s, Runs: %d, Collisions: %d, Percentage: %.2f%%\n", str_replace('"', '', json_encode(STRAT)), RUNS, $collisions, $collisions*100/RUNS);
+echo sprintf("Strat: %s, Runs: %d, Collisions: %d, Percentage: %.2f%%\n",
+    str_replace('"', '', json_encode(STRAT)), RUNS, $collisions, $collisions*100/RUNS);
