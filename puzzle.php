@@ -36,7 +36,6 @@ function gen_puzzle($strat = NORMAL) {
 
     for ($i = 0; $i <= 3; $i++)
         $puzzle[intdiv($randomKeys[$i], 3)][$randomKeys[$i] % 3] = $strat[$i];
-
     return $puzzle;
 }
 
@@ -51,36 +50,56 @@ function print_puzzle($puzzle) {
     }
 }
 
+function return_line_puzzle($puzzle, $line) {
+    $s = '';
+    for ($j = 0; $j <= 2; $j++) {
+        $s .= $puzzle[$line-1][$j] ?: iconv('cp437', 'utf8', chr(219));
+        $s .= ' ';
+    }
+    return $s;
+}
+
 function print_floor($floor) {
-    echo "               P2           \n";
-    echo "               |            \n";
+    for($i = 0; $i <= 2; $i++) {
+        echo '                 ' . return_line_puzzle($GLOBALS['p2'], $i + 1)."\n";
+    }
+    echo "                   v            \n";
     for($i = 0; $i <= 2; $i++) {
         for ($j = 0; $j <= 2; $j++) {
-            if($i === 1 && $j === 0)
-                echo 'P1- ';
-            elseif($j === 0)
-                echo '    ';
+            if($j === 0) {
+                echo return_line_puzzle($GLOBALS['p1'], $i + 1);
+                if ($i === 1)
+                    echo '> ';
+                else
+                    echo '  ';
+            }
             echo !empty($floor[$i][$j])
                 ? str_pad(str_replace('"', '', json_encode($floor[$i][$j])), 7, ' ', STR_PAD_BOTH)
-                : str_repeat(iconv('cp437', 'utf8', chr(219)), 7);
+                : str_pad(iconv('cp437', 'utf8', chr(219)), 9, ' ', STR_PAD_BOTH);
             echo ' ';
-            echo $i === 1 && $j === 2
-                ? '-P3'
-                : '';
+            if($j === 2) {
+                if ($i === 1)
+                    echo '< ';
+                else
+                    echo '  ';
+                echo return_line_puzzle($GLOBALS['p3'], $i + 1);
+            }
         }
         echo "\n";
     }
-    echo "               |            \n";
-    echo "             Entry          \n";
+    echo "                   ^            \n";
+    echo "                 Entry          \n";
 }
 
-function rotate90($matrix, $times = 1) {
-    for($t = 1; $t <= $times; $t++) {
-        $mat = $matrix;
-        array_unshift($mat, null);
-        $mat = call_user_func_array('array_map', $mat);
-        $matrix = array_map('array_reverse', $mat);
-    }
+function rotate90($matrix, $times = 1, $clockwise = true) {
+    for($t = 1; $t <= $times; $t++)
+        $matrix = $clockwise
+            ? call_user_func_array(
+                'array_map',
+                array(-1 => null) + array_reverse($matrix))
+            : call_user_func_array(
+                'array_map',
+                array(-1 => null) + array_map('array_reverse', $matrix));
     return $matrix;
 }
 
@@ -90,15 +109,11 @@ function populate_floor($p1, $p2, $p3) {
         [[],[],[]],
         [[],[],[]],
     ];
-    $floor = rotate90($floor);
-    for($p = 1; $p <= 3; $p++) {
+    for($p = 1; $p <= 3; $p++)
         for ($i = 0; $i <= 2; $i++)
             for ($j = 0; $j <= 2; $j++)
                 if (${'p'.$p}[$i][$j])
                     $floor[$i][$j][] = ${'p'.$p}[$i][$j];
-        $floor = rotate90($floor, 3);
-    }
-    $floor = rotate90($floor,2);
     return $floor;
 }
 
@@ -139,21 +154,18 @@ for($i = 1; $i <= RUNS; $i++) {
     ];
 */
 
-    echo "Iteration: $i\n";
-    echo "--------------------------------------------------\n";
+    $p1 = rotate90($p1, 1, false);
+    $p3 = rotate90($p3);
 
-    for($p = 1; $p <= 3; $p++) {
-        echo "P$p:\n";
-        print_puzzle(${'p'.$p});
-    }
+    echo "Iteration: $i\n";
+    echo "----------------------------------------------------------------------------\n";
 
     $floor = populate_floor($p1, $p2, $p3);
 
-    echo "Floor:\n";
     print_floor($floor);
-    echo "--------------------------------------------------\n";
+    echo "----------------------------------------------------------------------------\n";
 
     count_colisions();
 }
 
-echo sprintf("Runs: %d, Collisions: %d, Percentage: %.2f%%\n", RUNS, $collisions, $collisions*100/RUNS);
+echo sprintf("Strat: %s, Runs: %d, Collisions: %d, Percentage: %.2f%%\n", str_replace('"', '', json_encode(STRAT)), RUNS, $collisions, $collisions*100/RUNS);
