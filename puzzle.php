@@ -61,27 +61,21 @@ function line_puzzle($puzzle, $line) {
 
 function print_all($p1, $p2, $p3, $floor) {
     for($i = 0; $i <= 2; $i++) {
-        echo '                 ' . line_puzzle($p2, $i + 1)."\n";
+        echo '                 ' . line_puzzle($p2, $i + 1) . "\n";
     }
     echo "                   v            \n";
     for($i = 0; $i <= 2; $i++) {
         for ($j = 0; $j <= 2; $j++) {
             if($j === 0) {
                 echo line_puzzle($p1, $i + 1);
-                if ($i === 1)
-                    echo '> ';
-                else
-                    echo '  ';
+                echo $i === 1 ? '> ' : '  ';
             }
             echo !empty($floor[$i][$j])
                 ? str_pad(str_replace('"', '', json_encode($floor[$i][$j])), 7, ' ', STR_PAD_BOTH)
                 : str_pad(iconv('cp437', 'utf8', chr(219)), 9, ' ', STR_PAD_BOTH);
             echo ' ';
             if($j === 2) {
-                if ($i === 1)
-                    echo '< ';
-                else
-                    echo '  ';
+                echo $i === 1 ? '< ' : '  ';
                 echo line_puzzle($p3, $i + 1);
             }
         }
