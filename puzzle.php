@@ -60,9 +60,8 @@ function line_puzzle($puzzle, $line) {
 }
 
 function print_all($p1, $p2, $p3, $floor) {
-    for($i = 0; $i <= 2; $i++) {
+    for($i = 0; $i <= 2; $i++)
         echo '                 ' . line_puzzle($p2, $i + 1) . "\n";
-    }
     echo "                   v            \n";
     for($i = 0; $i <= 2; $i++) {
         for ($j = 0; $j <= 2; $j++) {
