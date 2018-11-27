@@ -152,16 +152,14 @@ for($i = 1; $i <= RUNS; $i++) {
 
     $p1 = rotate90($p1, 1, false);
     $p3 = rotate90($p3);
+    $floor = populate_floor($p1, $p2, $p3);
+    $collisions += has_colision($floor);
 
     echo "Iteration: $i\n";
     echo "----------------------------------------------------------------------------\n";
-
-    $floor = populate_floor($p1, $p2, $p3);
-
     print_all($p1, $p2, $p3, $floor);
     echo "----------------------------------------------------------------------------\n";
 
-    $collisions += has_colision($floor);
 }
 
 echo sprintf("Strat: %s, Runs: %d, Collisions: %d, Percentage: %.2f%%\n",
