@@ -59,10 +59,7 @@ function line_puzzle($puzzle, $line) {
     return $s;
 }
 
-function print_floor($floor) {
-    global $p1, $p2, $p3;
-
-
+function print_all($p1, $p2, $p3, $floor) {
     for($i = 0; $i <= 2; $i++) {
         echo '                 ' . line_puzzle($p2, $i + 1)."\n";
     }
@@ -120,18 +117,15 @@ function populate_floor($p1, $p2, $p3) {
     return $floor;
 }
 
-function count_colisions() {
-    global $collisions, $floor;
-
+function has_colision($floor) {
     for($i = 0; $i <= 2; $i++)
-        for ($j = 0; $j <= 2; $j++) {
-            if(@max(array_count_values($floor[$i][$j])) > 1) {
-                $collisions++;
-                return;
-            }
-        }
+        for ($j = 0; $j <= 2; $j++)
+            if(@max(array_count_values($floor[$i][$j])) > 1)
+                return 1;
+    return 0;
 }
 
+$collisions = 0;
 for($i = 1; $i <= RUNS; $i++) {
 
     for($p = 1; $p <= 3; $p++)
@@ -164,10 +158,10 @@ for($i = 1; $i <= RUNS; $i++) {
 
     $floor = populate_floor($p1, $p2, $p3);
 
-    print_floor($floor);
+    print_all($p1, $p2, $p3, $floor);
     echo "----------------------------------------------------------------------------\n";
 
-    count_colisions();
+    $collisions += has_colision($floor);
 }
 
 echo sprintf("Strat: %s, Runs: %d, Collisions: %d, Percentage: %.2f%%\n",
